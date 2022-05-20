@@ -16,7 +16,7 @@ This addon is intended to enhance the default chat box as unintrusively as possi
 
 ## Operating conditions
 If a message is under the default GMod limit, BigChat will stay out of the way entirely.
-Only when the messag exceeds the default GMod length will BigChat take over.
+Only when the message exceeds the default GMod length limit (128) will BigChat take over.
 
 ## Privileges
 When a client spawns, they ask the server if they can use BigChat.
