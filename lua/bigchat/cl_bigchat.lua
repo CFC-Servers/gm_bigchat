@@ -43,8 +43,8 @@ local function init()
         getChatBox()
     end )
 
-
     local isBig = false
+    local isTeamMessage = false
     local x = nil
     local chatY = nil
     local width = nil
@@ -197,6 +197,7 @@ local function init()
 
         if #chatText > 128 then
             net.Start( "BigChat_Receive" )
+            net.WriteBool( isTeamMessage )
             net.WriteString( chatText )
             net.SendToServer()
         end
@@ -206,7 +207,9 @@ local function init()
         inp.LastText = nil
     end )
 
-    hook.Add( "StartChat", "BigChat_JK", function()
+    hook.Add( "StartChat", "BigChat_JK", function( isTeam )
+        isTeamMessage = isTeam
+
         net.Start( "BigChat_Incoming_JK" )
         net.SendToServer()
     end )
