@@ -218,8 +218,8 @@ local function init()
     end )
 end
 
-hook.Add( "StartChat", "BigChat_JK", function()
-    hook.Remove( "StartChat", "BigChat_JK" )
+hook.Add( "StartChat", "BigChat_Setup", function()
+    hook.Remove( "StartChat", "BigChat_Setup" )
     net.Start( "BigChat_Enable" )
     net.SendToServer()
 end )

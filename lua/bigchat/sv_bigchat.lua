@@ -60,7 +60,7 @@ net.Receive( "BigChat_Receive", function( _, ply )
 
     local isTeam = net.ReadBool()
     local msg = net.ReadString()
-    if #msg > BigChat.maxLengthConvar:GetInt() then return end
+    if utf8.len( msg ) > BigChat.maxLengthConvar:GetInt() then return end
 
     local recipients = RecipientFilter()
     if isTeam then
