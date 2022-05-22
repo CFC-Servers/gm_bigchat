@@ -41,15 +41,17 @@ net.Receive( "BigChat_Incoming_JK", function( _, ply )
 end )
 
 local function logBigChat( ply, msg, isTeam )
-    msg = hook.Run( "PlayerSay", ply, msg, isTeam )
-    if msg == "" then return end
+    timer.Simple( 0, function()
+        msg = hook.Run( "PlayerSay", ply, msg, isTeam )
+        if msg == "" then return end
 
-    local playerName = ply:Nick()
+        local playerName = ply:Nick()
 
-    print( string.format( "%s: %s", playerName, msg ) )
-    local teamLog = isTeam and "<Team>" or ""
-    local logFormat = [["%s<%d><%s>%s" say "%s"]]
-    ServerLog( string.format( logFormat, playerName, ply:UserID(), ply:SteamID(), teamLog, msg ) .. "\n" )
+        print( string.format( "%s: %s", playerName, msg ) )
+        local teamLog = isTeam and "<Team>" or ""
+        local logFormat = [["%s<%d><%s>%s" say "%s"]]
+        ServerLog( string.format( logFormat, playerName, ply:UserID(), ply:SteamID(), teamLog, msg ) .. "\n" )
+    end )
 end
 
 net.Receive( "BigChat_Receive", function( _, ply )

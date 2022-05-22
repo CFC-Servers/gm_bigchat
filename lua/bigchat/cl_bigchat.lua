@@ -210,13 +210,16 @@ local function init()
     hook.Add( "StartChat", "BigChat_JK", function( isTeam )
         isTeamMessage = isTeam
 
+        net.Start( "BigChat_Enable" )
+        net.SendToServer()
+
         net.Start( "BigChat_Incoming_JK" )
         net.SendToServer()
     end )
 end
 
-hook.Add( "Think", "BigChat_Enable", function()
-    hook.Remove( "Think", "BigChat_Enable" )
+hook.Add( "StartChat", "BigChat_JK", function()
+    hook.Remove( "StartChat", "BigChat_JK" )
     net.Start( "BigChat_Enable" )
     net.SendToServer()
 end )
