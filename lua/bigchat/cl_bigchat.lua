@@ -24,25 +24,6 @@ local function init()
         end )
     end )
 
-    local function getChatBox()
-        if CHAT_BOX then return end
-
-        chat.Open(1)
-        local delay = engine.TickInterval() * 3
-        timer.Simple( delay, function()
-            local focused = vgui.GetKeyboardFocus()
-            if not focused then return end
-
-            wrapChatBox( focused:GetParent():GetParent() )
-            chat.Close()
-        end )
-    end
-
-    hook.Add( "Think", "BigChat_GetChat", function()
-        hook.Remove( "Think", "BigChat_GetChat" )
-        getChatBox()
-    end )
-
     local isBig = false
     local isTeamMessage = false
     local x = nil
@@ -186,7 +167,7 @@ local function init()
         isBig = true
     end )
 
-    hook.Add("FinishChat", "BigChat_Undo", function()
+    hook.Add( "FinishChat", "BigChat_Undo", function()
         if isBig == false then return end
 
         local inputContainer = CHAT_BOX.inputContainer
@@ -210,13 +191,14 @@ local function init()
     hook.Add( "StartChat", "BigChat_JK", function( isTeam )
         isTeamMessage = isTeam
 
-        net.Start( "BigChat_Enable" )
-        net.SendToServer()
-
         net.Start( "BigChat_Incoming_JK" )
         net.SendToServer()
     end )
 end
+
+net.Receive( "BigChat_Enable", function()
+    init()
+end )
 
 hook.Add( "StartChat", "BigChat_Setup", function()
     hook.Remove( "StartChat", "BigChat_Setup" )
@@ -224,6 +206,3 @@ hook.Add( "StartChat", "BigChat_Setup", function()
     net.SendToServer()
 end )
 
-net.Receive( "BigChat_Enable", function()
-    init()
-end )
