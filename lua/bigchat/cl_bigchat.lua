@@ -176,13 +176,11 @@ local function init()
         local inp = inputContainer:Find( "ChatInput" )
         local chatText = inp.LastText or ""
 
-        if #chatText > 128 then
-            if not input.IsButtonDown( KEY_ESCAPE ) then
-                net.Start( "BigChat_Receive" )
-                net.WriteBool( isTeamMessage )
-                net.WriteString( chatText )
-                net.SendToServer()
-            end
+        if #chatText > 128 and not input.IsButtonDown( KEY_ESCAPE ) then
+            net.Start( "BigChat_Receive" )
+            net.WriteBool( isTeamMessage )
+            net.WriteString( chatText )
+            net.SendToServer()
         end
 
         makeUnBig()
@@ -195,6 +193,25 @@ local function init()
 
         net.Start( "BigChat_Incoming_JK" )
         net.SendToServer()
+    end )
+
+    local beepSound = {
+        channel = CHAN_STATIC,
+        name = "BigChat_ChatBeep",
+        sound = "buttons/button3.wav",
+        volume = 1,
+        pitch = 75
+    }
+    sound.Add( beepSound )
+
+    hook.Add( "OnPlayerChat", "BigChat_Ping", function( ply, text )
+        if ply == LocalPlayer() then return end
+
+        local nick = string_lower( LocalPlayer():Nick() )
+        local found = string_find( text, nick )
+        if not found then return end
+
+        surface.PlaySound( "BigChat_ChatBeep" )
     end )
 end
 
