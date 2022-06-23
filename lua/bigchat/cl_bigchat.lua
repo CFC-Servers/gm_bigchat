@@ -177,10 +177,12 @@ local function init()
         local chatText = inp.LastText or ""
 
         if #chatText > 128 then
-            net.Start( "BigChat_Receive" )
-            net.WriteBool( isTeamMessage )
-            net.WriteString( chatText )
-            net.SendToServer()
+            if not input.IsButtonDown( KEY_ESCAPE ) then
+                net.Start( "BigChat_Receive" )
+                net.WriteBool( isTeamMessage )
+                net.WriteString( chatText )
+                net.SendToServer()
+            end
         end
 
         makeUnBig()
