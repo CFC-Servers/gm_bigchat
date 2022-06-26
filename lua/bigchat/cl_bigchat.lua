@@ -202,7 +202,7 @@ local function init()
     local beepSound = {
         channel = CHAN_STATIC,
         name = "BigChat_ChatBeep",
-        sound = "buttons/button3.wav",
+        sound = "buttons/button22.wav",
         volume = 1,
         pitch = 75
     }
