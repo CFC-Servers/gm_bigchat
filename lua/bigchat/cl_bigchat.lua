@@ -1,6 +1,10 @@
 local function init()
     local IsValid = IsValid
+    local string_lower = string.lower
+    local string_find = string.find
     local CHAT_BOX = CHAT_BOX or nil
+    local sentMessages = {}
+    local messageIndex = 1
 
     net.Receive( "BigChat_Receive", function()
         local ply = net.ReadEntity()
