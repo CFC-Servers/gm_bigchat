@@ -17,7 +17,7 @@ local function init()
     local beepSound = {
         name = "BigChat_ChatBeep",
         channel = CHAN_STATIC,
-        sound = "buttons/lightswitch2.wav",
+        sound = "garrysmod/balloon_pop_cute.wav",
         volume = 1,
         pitch = 100
     }
