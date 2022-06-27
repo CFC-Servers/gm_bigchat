@@ -43,6 +43,10 @@ net.Receive( "BigChat_Incoming_JK", function( _, ply )
 end )
 
 local function broadcastBigChat( ply, msg, isTeam )
+    if #msg == 0 then return end
+    if string_StartWith( msg, "!p " ) then return end
+    if string_StartWith( msg, "@" ) then return end
+
     local recipients = RecipientFilter()
     if isTeam then
         recipients:AddRecipientsByTeam( ply:Team() )
@@ -92,12 +96,8 @@ net.Receive( "BigChat_Receive", function( _, ply )
 
     local len = utf8.len( msg )
     if len > BigChat.maxLengthConvar:GetInt() then
-        print( "Received a too-long return from: ", ply, len )
-        return
+        msg = ""
     end
-
-    if string_StartWith( msg, "!p " ) then return end
-    if string_StartWith( msg, "@" ) then return end
 
     ply.BigChat_Message = { msg = msg, isTeam = isTeam }
 end )
