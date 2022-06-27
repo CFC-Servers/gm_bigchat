@@ -17,9 +17,9 @@ local function init()
     local beepSound = {
         name = "BigChat_ChatBeep",
         channel = CHAN_STATIC,
-        sound = "buttons/button22.wav",
+        sound = "buttons/lightswitch2.wav",
         volume = 1,
-        pitch = 75
+        pitch = 100
     }
     sound.Add( beepSound )
 
