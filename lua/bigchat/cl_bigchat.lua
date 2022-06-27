@@ -268,7 +268,7 @@ local function init()
     local function wasMentioned( ply, text )
         if isOwnerMessage( ply ) then return false end
         local nick = string_lower( LocalPlayer():Nick() )
-        local found = string.find( string_lower( text ), nick )
+        local found = string_find( string_lower( text ), nick )
 
         return found ~= nil
     end
