@@ -15,9 +15,9 @@ local function init()
     local historyIndex = 0
 
     local beepSound = {
-        channel = CHAN_STATIC,
         name = "BigChat_ChatBeep",
-        sound = "buttons/button3.wav",
+        channel = CHAN_STATIC,
+        sound = "buttons/button22.wav",
         volume = 1,
         pitch = 75
     }
@@ -248,14 +248,14 @@ local function init()
     local function wasMentioned( ply, text )
         if not isOwnerMessage( ply ) then return false end
         local nick = string_lower( LocalPlayer():Nick() )
-        local found = string_find( text, nick )
+        local found = string.find( string_lower( text ), nick )
 
-        return found
+        return found ~= nil
     end
 
     hook.Add( "OnPlayerChat", "BigChat_Ping", function( ply, text )
         if wasMentioned( ply, text ) then
-            surface.PlaySound( "BigChat_ChatBeep" )
+            LocalPlayer():EmitSound( "BigChat_ChatBeep" )
         end
 
         if isOwnerMessage( ply ) then
