@@ -5,8 +5,11 @@ BigChat = {
 }
 
 if SERVER then
-    include( "bigchat/sv_bigchat.lua" )
     AddCSLuaFile( "bigchat/cl_bigchat.lua" )
+
+    hook.Add( "InitPostEntity", "BigChat_Setup", function()
+        include( "bigchat/sv_bigchat.lua" )
+    end )
 else
     include( "bigchat/cl_bigchat.lua" )
 end

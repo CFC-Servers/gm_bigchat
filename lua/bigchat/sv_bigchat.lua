@@ -93,4 +93,4 @@ hook.Add( "PlayerSay", "BigChat_ChatWatcher", function( ply, _, _, isBigChat )
         ply.BigChat_SkipNext = nil
         return ""
     end
-end, HOOK_HIGH )
+end, HOOK_MONITOR_HIGH )
