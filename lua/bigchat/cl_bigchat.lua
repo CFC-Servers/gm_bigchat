@@ -4,7 +4,7 @@ local function init()
     local string_find = string.find
     local CHAT_BOX = CHAT_BOX or nil
     local sentMessages = {}
-    local messageIndex = 1
+    local historyIndex = 0
 
     net.Receive( "BigChat_Receive", function()
         local ply = net.ReadEntity()
@@ -14,13 +14,45 @@ local function init()
         hook.Run( "OnPlayerChat", ply, msg, false, not ply:Alive() )
     end )
 
+    local function handleHistory( inp, code, ctrl )
+        if #sentMessages == 0 then return true end
+
+        local caretPos = inp:GetCaretPos()
+
+        local up = code == KEY_UP and caretPos == 0
+        local overrideUp = ctrl and code == KEY_UP
+
+        local down = code == KEY_DOWN and caretPos == 0
+        local overrideDown = ctrl and code == KEY_DOWN
+
+        if up or overrideUp then
+            historyIndex = math.min( historyIndex + 1, #sentMessages )
+            inp:SetText( sentMessages[historyIndex] )
+            inp:SetCaretPos( 0 )
+        elseif down or overrideDown then
+            historyIndex = math.max( historyIndex - 1, 1 )
+            inp:SetText( sentMessages[historyIndex] )
+            inp:SetCaretPos( 0 )
+        end
+
+        return true
+    end
+
     local function wrapChatBox( chatBox )
         CHAT_BOX = CHAT_BOX or chatBox
         if not chatBox then return end
 
         local inp = chatBox:Find( "ChatInput" )
         inp:SetMaximumCharCount( BigChat.maxLengthConvar:GetInt() )
+
+        function inp:OnKeyCodeTyped( code )
+            if code = KEY_ESCAPE then return end
+            local ctrl = input.IsKeyDown( KEY_LCONTROL )
+
+            return handleHistory( inp, code, ctrl )
+        end
     end
+
     cvars.AddChangeCallback( "bigchat_max_length", function()
         if not CHAT_BOX then return end
         timer.Simple( 0, function()
@@ -199,6 +231,18 @@ local function init()
         net.SendToServer()
     end )
 
+    local function isOwnerMessage( ply )
+        return ply == LocalPlayer()
+    end
+
+    local function wasMentioned( ply, text )
+        if not isOwnerMessage( ply ) then return false end
+        local nick = string_lower( LocalPlayer():Nick() )
+        local found = string_find( text, nick )
+
+        return found
+    end
+
     local beepSound = {
         channel = CHAN_STATIC,
         name = "BigChat_ChatBeep",
@@ -209,13 +253,13 @@ local function init()
     sound.Add( beepSound )
 
     hook.Add( "OnPlayerChat", "BigChat_Ping", function( ply, text )
-        if ply == LocalPlayer() then return end
+        if wasMentioned( ply, text ) then
+            surface.PlaySound( "BigChat_ChatBeep" )
+        end
 
-        local nick = string_lower( LocalPlayer():Nick() )
-        local found = string_find( text, nick )
-        if not found then return end
-
-        surface.PlaySound( "BigChat_ChatBeep" )
+        if isOwnerMessage( ply ) then
+            table.insert( sentMessages, 1, text )
+        end
     end )
 end
 
