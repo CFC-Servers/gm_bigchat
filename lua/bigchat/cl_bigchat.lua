@@ -35,25 +35,41 @@ local function init()
         if #sentMessages == 0 then return false end
 
         local caretPos = inp:GetCaretPos()
+        local fontSize = 12 -- Change later
+        local w = CHAT_BOX:GetSize() / fontSize
 
-        local up = code == KEY_UP and caretPos <= 64
+        local up = code == KEY_UP
         local overrideUp = ctrl and code == KEY_UP
 
-        local down = code == KEY_DOWN and caretPos <= 64
+        local down = code == KEY_DOWN
         local overrideDown = ctrl and code == KEY_DOWN
 
+        if isBig then
+            up = code == KEY_UP and caretPos <= w
+            overrideUp = ctrl and code == KEY_UP
+
+            down = code == KEY_DOWN and caretPos >= #inp:GetText() - 5
+            overrideDown = ctrl and code == KEY_DOWN
+        end
+
         if up or overrideUp then
+            local prev = historyIndex
             historyIndex = math.min( historyIndex + 1, #sentMessages )
 
-            local msg = sentMessages[historyIndex]
-            inp:SetText( msg )
-            inp:SetCaretPos( #msg )
+            if prev ~= historyIndex then
+                local msg = sentMessages[historyIndex]
+                inp:SetText( msg )
+                inp:SetCaretPos( #msg )
+            end
         elseif down or overrideDown then
+            local prev = historyIndex
             historyIndex = math.max( historyIndex - 1, 1 )
 
-            local msg = sentMessages[historyIndex]
-            inp:SetText( msg )
-            inp:SetCaretPos( #msg )
+            if prev ~= historyIndex then
+                local msg = sentMessages[historyIndex]
+                inp:SetText( msg )
+                inp:SetCaretPos( #msg )
+            end
         end
 
         return false
@@ -87,7 +103,7 @@ local function init()
 
         local inp = CHAT_BOX:Find( "ChatInput" )
         local inpHolder = inp:GetParent()
-        local label = inpHolder:Find("ChatInputPrompt")
+        local label = inpHolder:Find( "ChatInputPrompt" )
 
         label:SetText( "Say:" )
 
@@ -133,7 +149,7 @@ local function init()
 
         inpHeight = inp:GetTall()
         local inpHolder = inp:GetParent()
-        local label = inpHolder:Find("ChatInputPrompt")
+        local label = inpHolder:Find( "ChatInputPrompt" )
         label:SetText( "Big:" )
 
         x = x or inpHolder:GetX()
