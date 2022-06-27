@@ -36,20 +36,24 @@ local function init()
 
         local caretPos = inp:GetCaretPos()
 
-        local up = ( code == KEY_UP and caretPos == 0 ) or ( code == KEY_UP and not isBig )
+        local up = code == KEY_UP and caretPos <= 64
         local overrideUp = ctrl and code == KEY_UP
 
-        local down = ( code == KEY_DOWN and caretPos == 0 ) or ( code == KEY_DOWN and not isBig )
+        local down = code == KEY_DOWN and caretPos <= 64
         local overrideDown = ctrl and code == KEY_DOWN
 
         if up or overrideUp then
             historyIndex = math.min( historyIndex + 1, #sentMessages )
-            inp:SetText( sentMessages[historyIndex] )
-            inp:SetCaretPos( 0 )
+
+            local msg = sentMessages[historyIndex]
+            inp:SetText( msg )
+            inp:SetCaretPos( #msg )
         elseif down or overrideDown then
             historyIndex = math.max( historyIndex - 1, 1 )
-            inp:SetText( sentMessages[historyIndex] )
-            inp:SetCaretPos( 0 )
+
+            local msg = sentMessages[historyIndex]
+            inp:SetText( msg )
+            inp:SetCaretPos( #msg )
         end
 
         return false
