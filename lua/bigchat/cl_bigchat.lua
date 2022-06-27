@@ -246,7 +246,7 @@ local function init()
     end
 
     local function wasMentioned( ply, text )
-        if not isOwnerMessage( ply ) then return false end
+        if isOwnerMessage( ply ) then return false end
         local nick = string_lower( LocalPlayer():Nick() )
         local found = string.find( string_lower( text ), nick )
 
