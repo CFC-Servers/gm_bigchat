@@ -3,6 +3,14 @@ local function init()
     local string_lower = string.lower
     local string_find = string.find
     local CHAT_BOX = CHAT_BOX or nil
+
+    local isBig = false
+    local isTeamMessage = false
+    local x = nil
+    local chatY = nil
+    local width = nil
+    local inpHeight = nil
+    local maxInputHeightMultiplier = 3.5
     local sentMessages = {}
     local historyIndex = 0
 
@@ -15,14 +23,14 @@ local function init()
     end )
 
     local function handleHistory( inp, code, ctrl )
-        if #sentMessages == 0 then return true end
+        if #sentMessages == 0 then return false end
 
         local caretPos = inp:GetCaretPos()
 
-        local up = code == KEY_UP and caretPos == 0
+        local up = ( code == KEY_UP and caretPos == 0 ) or ( code == KEY_UP and not isBig )
         local overrideUp = ctrl and code == KEY_UP
 
-        local down = code == KEY_DOWN and caretPos == 0
+        local down = ( code == KEY_DOWN and caretPos == 0 ) or ( code == KEY_DOWN and not isBig )
         local overrideDown = ctrl and code == KEY_DOWN
 
         if up or overrideUp then
@@ -35,7 +43,7 @@ local function init()
             inp:SetCaretPos( 0 )
         end
 
-        return true
+        return false
     end
 
     local function wrapChatBox( chatBox )
@@ -46,7 +54,7 @@ local function init()
         inp:SetMaximumCharCount( BigChat.maxLengthConvar:GetInt() )
 
         function inp:OnKeyCodeTyped( code )
-            if code = KEY_ESCAPE then return end
+            if code == KEY_ESCAPE then return end
             local ctrl = input.IsKeyDown( KEY_LCONTROL )
 
             return handleHistory( inp, code, ctrl )
@@ -60,13 +68,7 @@ local function init()
         end )
     end )
 
-    local isBig = false
-    local isTeamMessage = false
-    local x = nil
-    local chatY = nil
-    local width = nil
-    local inpHeight = nil
-    local maxInputHeightMultiplier = 3.5
+    
 
     local function makeUnBig()
         local inputContainer = CHAT_BOX.inputContainer
@@ -204,6 +206,7 @@ local function init()
     end )
 
     hook.Add( "FinishChat", "BigChat_Undo", function()
+        historyIndex = 0
         if isBig == false then return end
 
         local inputContainer = CHAT_BOX.inputContainer
