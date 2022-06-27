@@ -3,6 +3,8 @@ util.AddNetworkString( "BigChat_Incoming" )
 util.AddNetworkString( "BigChat_Receive" )
 util.AddNetworkString( "BigChat_Incoming_JK" )
 
+local string_StartWith = string.StartWith
+
 local waitingForBigChat = {}
 
 local function _canUseBigChat( ply )
@@ -54,7 +56,13 @@ local function broadcastBigChat( ply, msg, isTeam )
     net.Send( recipients )
 end
 
-local function processBigChat( ply, msg, isTeam )
+local function processBigChat( ply )
+    local message = ply.BigChat_Message
+    local msg = message.msg
+    local isTeam = message.isTeam
+
+    ply.BigChat_Message = nil
+
     timer.Simple( 0, function()
         local isBigChat = true
         msg = hook.Run( "PlayerSay", ply, msg, isTeam, isBigChat )
@@ -76,13 +84,22 @@ net.Receive( "BigChat_Receive", function( _, ply )
     if not waitingForBigChat[ply] then return end
     if not canUseBigChat( ply ) then return end
 
-    local isTeam = net.ReadBool()
-    local msg = net.ReadString()
-    if utf8.len( msg ) > BigChat.maxLengthConvar:GetInt() then return end
-
     waitingForBigChat[ply] = nil
     ply.BigChat_SkipNext = true
-    processBigChat( ply, msg, isTeam )
+
+    local isTeam = net.ReadBool()
+    local msg = net.ReadString()
+
+    local len = utf8.len( msg )
+    if len > BigChat.maxLengthConvar:GetInt() then
+        print( "Received a too-long return from: ", ply, len )
+        return
+    end
+
+    if string_StartWith( msg, "!p " ) then return end
+    if string_StartWith( msg, "@" ) then return end
+
+    ply.BigChat_Message = { msg = msg, isTeam = isTeam }
 end )
 
 -- This hook is called after the BigChat_Receive net message is received
@@ -91,6 +108,7 @@ hook.Add( "PlayerSay", "BigChat_ChatWatcher", function( ply, _, _, isBigChat )
     if isBigChat then return end
     if ply.BigChat_SkipNext then
         ply.BigChat_SkipNext = nil
+        processBigChat( ply )
         return ""
     end
-end, HOOK_MONITOR_HIGH )
+end, HOOK_HIGH )
