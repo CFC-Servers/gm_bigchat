@@ -11,7 +11,7 @@ local function init()
     local width = nil
     local inpHeight = nil
     local maxInputHeightMultiplier = 3.5
-    local sentMessages = {}
+    local sentMessages = sentMessages or {}
     local historyIndex = 0
 
     net.Receive( "BigChat_Receive", function()
