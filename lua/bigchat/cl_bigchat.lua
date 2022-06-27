@@ -14,6 +14,15 @@ local function init()
     local sentMessages = sentMessages or {}
     local historyIndex = 0
 
+    local beepSound = {
+        channel = CHAN_STATIC,
+        name = "BigChat_ChatBeep",
+        sound = "buttons/button3.wav",
+        volume = 1,
+        pitch = 75
+    }
+    sound.Add( beepSound )
+
     net.Receive( "BigChat_Receive", function()
         local ply = net.ReadEntity()
         if not IsValid( ply ) then return end
@@ -67,8 +76,6 @@ local function init()
             wrapChatBox( CHAT_BOX )
         end )
     end )
-
-    
 
     local function makeUnBig()
         local inputContainer = CHAT_BOX.inputContainer
@@ -245,15 +252,6 @@ local function init()
 
         return found
     end
-
-    local beepSound = {
-        channel = CHAN_STATIC,
-        name = "BigChat_ChatBeep",
-        sound = "buttons/button22.wav",
-        volume = 1,
-        pitch = 75
-    }
-    sound.Add( beepSound )
 
     hook.Add( "OnPlayerChat", "BigChat_Ping", function( ply, text )
         if wasMentioned( ply, text ) then
