@@ -1,3 +1,11 @@
+net.Receive( "BigChat_Receive", function()
+    local ply = net.ReadEntity()
+    if not IsValid( ply ) then return end
+
+    local msg = net.ReadString()
+    hook.Run( "OnPlayerChat", ply, msg, false, not ply:Alive() )
+end )
+
 local function init()
     local IsValid = IsValid
     local string_lower = string.lower
@@ -22,14 +30,6 @@ local function init()
         pitch = 100
     }
     sound.Add( beepSound )
-
-    net.Receive( "BigChat_Receive", function()
-        local ply = net.ReadEntity()
-        if not IsValid( ply ) then return end
-
-        local msg = net.ReadString()
-        hook.Run( "OnPlayerChat", ply, msg, false, not ply:Alive() )
-    end )
 
     local function handleHistory( inp, code, ctrl )
         if #sentMessages == 0 then return false end
