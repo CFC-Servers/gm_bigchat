@@ -165,7 +165,7 @@ local function init()
         CHAT_BOX.inputContainer = vgui.Create( "DPanel", CHAT_BOX )
         local inputContainer = CHAT_BOX.inputContainer
 
-        inputContainer:Dock(BOTTOM)
+        inputContainer:Dock( BOTTOM )
         inputContainer:DockMargin( x, inputTopMargin, 0, inputBottomMargin )
         inputContainer:SetTall( inpHeight * maxInputHeightMultiplier )
         inputContainer.Paint = function() end
@@ -176,13 +176,13 @@ local function init()
         -- chat wrapper
         CHAT_BOX.textContainer = vgui.Create( "DPanel", CHAT_BOX )
         local textContainer = CHAT_BOX.textContainer
-        textContainer:Dock(FILL)
+        textContainer:Dock( FILL )
 
         textContainer:DockMargin( x, chatY, x, 0 )
         textContainer.Paint = function() end
 
         chatContainer:SetParent( textContainer )
-        chatContainer:Dock(FILL)
+        chatContainer:Dock( FILL )
 
         -- size the overall box
         CHAT_BOX:SetHeight( CHAT_BOX:GetTall() + ( inpHeight * ( maxInputHeightMultiplier - 1 ) ) )
