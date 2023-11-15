@@ -1,3 +1,5 @@
+BigChat.shouldNotifyOnMentionConvar =  CreateConVar( "bigchat_notify_on_mention", "1", FCVAR_ARCHIVE )
+
 net.Receive( "BigChat_Receive", function()
     local ply = net.ReadEntity()
     if not IsValid( ply ) then return end
@@ -274,7 +276,7 @@ local function init()
     end
 
     hook.Add( "OnPlayerChat", "BigChat_Ping", function( ply, text )
-        if wasMentioned( ply, text ) then
+        if wasMentioned( ply, text ) and BigChat.shouldNotifyOnMentionConvar:GetBool() then
             LocalPlayer():EmitSound( "BigChat_ChatBeep" )
         end
 
