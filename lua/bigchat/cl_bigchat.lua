@@ -1,4 +1,4 @@
-BigChat.shouldNotifyOnMentionConvar =  CreateConVar( "bigchat_notify_on_mention", "1", FCVAR_ARCHIVE, "should a notification sound play when your name is sad in chat")
+BigChat.shouldNotifyOnMentionConvar =  CreateConVar( "bigchat_notify_on_mention", "1", FCVAR_ARCHIVE, "should a notification sound play when your name is sad in chat" )
 
 net.Receive( "BigChat_Receive", function()
     local ply = net.ReadEntity()
